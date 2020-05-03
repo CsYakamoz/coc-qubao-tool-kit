@@ -1,0 +1,191 @@
+{
+    "name": "qubao-tool-kit",
+    "version": "0.0.1",
+    "description": "",
+    "author": "CsYakamoz <532609418@qq.com>",
+    "license": "MIT",
+    "main": "lib/index.js",
+    "keywords": [
+        "coc.nvim"
+    ],
+    "engines": {
+        "coc": "^0.0.70"
+    },
+    "scripts": {
+        "clean": "rimraf lib",
+        "watch": "webpack --watch",
+        "build": "webpack",
+        "prepare": "npm-run-all clean build"
+    },
+    "devDependencies": {
+        "@types/node": "^13.13.1",
+        "coc.nvim": "^0.0.77",
+        "npm-run-all": "^4.1.5",
+        "rimraf": "^3.0.2",
+        "ts-loader": "^7.0.1",
+        "typescript": "^3.8.3",
+        "webpack": "^4.42.1",
+        "webpack-cli": "^3.3.11"
+    },
+    "activationEvents": [
+        "*"
+    ],
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "qubao-tool-kit configuration",
+            "properties": {
+                "qtk": {
+                    "type": "object",
+                    "description": "the configuration of qubao tool kit",
+                    "properties": {
+                        "cpr": {
+                            "type": "object",
+                            "description": "cpr config for every folder",
+                            "patternProperties": {
+                                ".+": {
+                                    "type": "object",
+                                    "properties": {
+                                        "targetId": {
+                                            "type": "string",
+                                            "description": "target config"
+                                        },
+                                        "list": {
+                                            "type": "array",
+                                            "additionalItems": false,
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "remoteAddr": {
+                                                        "type": "string"
+                                                    },
+                                                    "remoteUser": {
+                                                        "type": "string"
+                                                    },
+                                                    "remoteDir": {
+                                                        "type": "string"
+                                                    },
+                                                    "id": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "remoteAddr",
+                                                    "remoteUser",
+                                                    "remoteDir",
+                                                    "id"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "targetId",
+                                        "list"
+                                    ]
+                                }
+                            }
+                        },
+                        "pmr": {
+                            "type": "object",
+                            "description": "pmr config for every remote server",
+                            "properties": {
+                                "targetId": {
+                                    "type": "string",
+                                    "description": "target config"
+                                },
+                                "list": {
+                                    "type": "array",
+                                    "additionalItems": false,
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string"
+                                            },
+                                            "remoteUser": {
+                                                "type": "string"
+                                            },
+                                            "remoteAddr": {
+                                                "type": "string"
+                                            },
+                                            "regex": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "id",
+                                            "remoteUser",
+                                            "remoteAddr"
+                                        ]
+                                    }
+                                }
+                            },
+                            "required": [
+                                "targetId",
+                                "list"
+                            ]
+                        },
+                        "switching": {
+                            "type": "object",
+                            "properties": {
+                                "defaultPoint": {
+                                    "type": "string",
+                                    "description": "default jump to the file if exists"
+                                },
+                                "viewColumn": {
+                                    "type": "integer",
+                                    "description": "where to open the file",
+                                    "default": -1,
+                                    "enum": [
+                                        -2,
+                                        -1,
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5,
+                                        6,
+                                        7,
+                                        8
+                                    ]
+                                },
+                                "preview": {
+                                    "type": "boolean",
+                                    "default": true,
+                                    "description": "An optional view column in which the editor should be shown"
+                                },
+                                "preserveFocus": {
+                                    "type": "boolean",
+                                    "default": false,
+                                    "description": "An optional flag that when true will stop the editor from taking focus"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "qtk.cpr.exec",
+                "title": "CpR"
+            },
+            {
+                "command": "qtk.cpr.reset",
+                "title": "CpR-Reset"
+            },
+            {
+                "command": "qtk.pmr.exec",
+                "title": "PmR"
+            },
+            {
+                "command": "qtk.pmr.reset",
+                "title": "PmR-Reset"
+            },
+            {
+                "command": "qtk.switching",
+                "title": "Switching"
+            }
+        ]
+    }
+}
