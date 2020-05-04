@@ -131,33 +131,6 @@
                                 "defaultPoint": {
                                     "type": "string",
                                     "description": "default jump to the file if exists"
-                                },
-                                "viewColumn": {
-                                    "type": "integer",
-                                    "description": "where to open the file",
-                                    "default": -1,
-                                    "enum": [
-                                        -2,
-                                        -1,
-                                        1,
-                                        2,
-                                        3,
-                                        4,
-                                        5,
-                                        6,
-                                        7,
-                                        8
-                                    ]
-                                },
-                                "preview": {
-                                    "type": "boolean",
-                                    "default": true,
-                                    "description": "An optional view column in which the editor should be shown"
-                                },
-                                "preserveFocus": {
-                                    "type": "boolean",
-                                    "default": false,
-                                    "description": "An optional flag that when true will stop the editor from taking focus"
                                 }
                             }
                         }

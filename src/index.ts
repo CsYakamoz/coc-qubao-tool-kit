@@ -1,4 +1,4 @@
-import { commands, ExtensionContext } from 'coc.nvim';
+import { commands, ExtensionContext, listManager, workspace } from 'coc.nvim';
 
 import Switching from './switching';
 import * as Cpr from './cpr';
@@ -20,7 +20,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     Cpr.initStatusBar();
 
     context.subscriptions.push(
-        commands.registerCommand('qtk.pmr.exec', Pmr.exec)
+        listManager.registerList(new Pmr.PmrList(workspace.nvim))
     );
 
     context.subscriptions.push(

@@ -1,35 +1,48 @@
 import { get, isCorrect, update, add } from './config';
 import { execCommandOnShell } from '../utility';
-import { workspace } from 'coc.nvim';
+import { workspace, BasicList, ListItem, Neovim } from 'coc.nvim';
 import { init, changeText } from './status';
 
 export const initStatusBar = init;
 
-export async function exec() {
-    const target = getTarget();
-    const filter = new RegExp(target.regex ? target.regex : '.*');
+export class PmrList extends BasicList {
+    public readonly name = 'pmr';
+    public readonly defaultAction = 'exec';
+    public description = 'restart remote pm2 process';
 
-    const listCommand = `ssh ${target.remoteUser}@${target.remoteAddr} "pm2 jlist | jq -c 'map(.name)'" | jq -r "join(\\"\\n\\")"`;
-    const list = await execCommandOnShell(listCommand)
-        .then(str => str.split('\n'))
-        .then(arr => arr.filter(item => filter.test(item)));
+    constructor(nvim: Neovim) {
+        super(nvim);
 
-    if (list.length === 0) {
-        workspace.showMessage('no pm2 process is running');
-        return;
+        this.addAction('exec', async (item: ListItem) => {
+            const name = item.data;
+
+            const target = getTarget();
+            const restartCommand = `ssh ${target.remoteUser}@${target.remoteAddr} "pm2 restart ${name}"`;
+            await execCommandOnShell(restartCommand);
+
+            workspace.showMessage(
+                `Successfully restart remote process - ${name}`
+            );
+        });
     }
 
-    const selectedIdx = await workspace.showQuickpick(list);
-    if (selectedIdx === -1) {
-        workspace.showMessage('cancel');
-        return;
+    public async loadItems(): Promise<ListItem[]> {
+        const target = getTarget();
+        const filter = new RegExp(target.regex ? target.regex : '.*');
+
+        const listCommand = `ssh ${target.remoteUser}@${target.remoteAddr} "pm2 jlist | jq -c 'map(.name)'" | jq -r "join(\\"\\n\\")"`;
+        const list = await execCommandOnShell(listCommand)
+            .then(str => str.split('\n'))
+            .then(arr => arr.filter(item => filter.test(item)));
+
+        return list.map(
+            (name): ListItem => ({
+                label: name,
+                filterText: name,
+                data: name
+            })
+        );
     }
-
-    const selected = list[selectedIdx];
-    const restartCommand = `ssh ${target.remoteUser}@${target.remoteAddr} "pm2 restart ${selected}"`;
-    await execCommandOnShell(restartCommand);
-
-    workspace.showMessage(`Successfully restart remote process - ${selected}`);
 }
 
 function getTarget() {
