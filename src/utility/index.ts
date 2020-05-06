@@ -4,7 +4,11 @@ import { exec } from 'child_process';
 export const fsUriPrefix = 'file://';
 
 export function getFolder() {
-    return workspace.workspaceFolder.uri.substring(fsUriPrefix.length);
+    if (workspace.workspaceFolder !== null) {
+        return workspace.workspaceFolder.uri.substring(fsUriPrefix.length);
+    }
+
+    return workspace.nvim.call('getcwd').then(cwd => cwd.trim());
 }
 
 export function getQtkConfig(section: string) {

@@ -19,7 +19,7 @@ export async function exec() {
     }
 
     const fsPath = workspace.uri.substring(fsUriPrefix.length);
-    const folder = getFolder();
+    const folder = await getFolder();
     if (!fsPath.startsWith(folder)) {
         const filename = basename(fsPath);
         throw new Error(
@@ -48,7 +48,7 @@ export async function exec() {
 }
 
 export async function reset() {
-    const folder = getFolder();
+    const folder = await getFolder();
     const folderConfig = getFolderConfigWithInit(folder);
 
     const itemList = folderConfig.list.map(item => item.id).concat('⊕');

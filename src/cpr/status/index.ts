@@ -4,8 +4,8 @@ import { getFolderConfig, isCorrect } from '../config';
 
 const StatusBarItem = workspace.createStatusBarItem();
 
-export function init() {
-    const folder = getFolder();
+export async function init() {
+    const folder = await getFolder();
     const folderConfig = getFolderConfig(folder);
 
     if (isCorrect(folderConfig)) {
