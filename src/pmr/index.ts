@@ -24,6 +24,15 @@ export class PmrList extends BasicList {
                 `Successfully restart remote process - ${name}`
             );
         });
+
+        this.addAction('preview', (item: ListItem) => {
+            const name = item.data;
+
+            const target = getTarget();
+            const restartCommand = `ssh ${target.remoteUser}@${target.remoteAddr} "pm2 restart ${name}"`;
+
+            workspace.showMessage(restartCommand);
+        });
     }
 
     public async loadItems(): Promise<ListItem[]> {

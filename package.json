@@ -148,10 +148,6 @@
                 "title": "CpR-Reset"
             },
             {
-                "command": "qtk.pmr.exec",
-                "title": "PmR"
-            },
-            {
                 "command": "qtk.pmr.reset",
                 "title": "PmR-Reset"
             },
