@@ -20,6 +20,11 @@ export function getTargetConfig(folder: string) {
 export function getFolderConfig(folder: string) {
     const config = getQtkConfig('cpr') as CprSetting;
 
+    if (config[folder] !== undefined && config[folder].source !== undefined) {
+        const source = config[folder].source as string;
+        return config[source];
+    }
+
     return config[folder];
 }
 

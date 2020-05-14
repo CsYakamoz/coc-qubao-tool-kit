@@ -9,6 +9,7 @@ interface CprBase extends Base {
 }
 
 interface CprFolderConfig {
+    source?: string;
     targetId: string;
     list: CprBase[];
 }

@@ -44,43 +44,58 @@
                             "description": "cpr config for every folder",
                             "patternProperties": {
                                 ".+": {
-                                    "type": "object",
-                                    "properties": {
-                                        "targetId": {
-                                            "type": "string",
-                                            "description": "target config"
-                                        },
-                                        "list": {
-                                            "type": "array",
-                                            "additionalItems": false,
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "remoteAddr": {
-                                                        "type": "string"
-                                                    },
-                                                    "remoteUser": {
-                                                        "type": "string"
-                                                    },
-                                                    "remoteDir": {
-                                                        "type": "string"
-                                                    },
-                                                    "id": {
-                                                        "type": "string"
-                                                    }
+                                    "oneOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "targetId": {
+                                                    "type": "string",
+                                                    "description": "target config"
                                                 },
-                                                "required": [
-                                                    "remoteAddr",
-                                                    "remoteUser",
-                                                    "remoteDir",
-                                                    "id"
-                                                ]
-                                            }
+                                                "list": {
+                                                    "type": "array",
+                                                    "additionalItems": false,
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "remoteAddr": {
+                                                                "type": "string"
+                                                            },
+                                                            "remoteUser": {
+                                                                "type": "string"
+                                                            },
+                                                            "remoteDir": {
+                                                                "type": "string"
+                                                            },
+                                                            "id": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "remoteAddr",
+                                                            "remoteUser",
+                                                            "remoteDir",
+                                                            "id"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "targetId",
+                                                "list"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "source": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "source"
+                                            ]
                                         }
-                                    },
-                                    "required": [
-                                        "targetId",
-                                        "list"
                                     ]
                                 }
                             }
