@@ -27,6 +27,11 @@ export async function exec() {
         );
     }
 
+    if (relative(folder, fsPath).startsWith('.git')) {
+        workspace.showMessage('the file path should not include .git');
+        return;
+    }
+
     const {
         id,
         remoteUser: user,
