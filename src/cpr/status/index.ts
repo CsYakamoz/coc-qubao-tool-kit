@@ -15,7 +15,7 @@ export async function init() {
 
         StatusBarItem.text = `Cpr-${target.id}`;
     } else {
-        StatusBarItem.text = `Cpr-🤔`;
+        StatusBarItem.text = `Cpr-?`;
     }
 
     StatusBarItem.show();

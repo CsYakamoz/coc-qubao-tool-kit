@@ -13,7 +13,7 @@ export function init() {
 
         StatusBarItem.text = `Pmr-${target.id}`;
     } else {
-        StatusBarItem.text = `Pmr-🤔`;
+        StatusBarItem.text = `Pmr-?`;
     }
 
     StatusBarItem.show();
