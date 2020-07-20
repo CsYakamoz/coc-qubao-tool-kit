@@ -43,7 +43,7 @@ export default async function Switching() {
             return;
         }
 
-        const command = `find ${handlerPath} -type f | grep -E "^${handlerPath}/${apiName}\b"`;
+        const command = `find ${handlerPath} -type f | grep -E "^${handlerPath}/${apiName}\\b"`;
         await find(command)
             .then(select(prefix + '/handler'))
             .then(openFile);
@@ -61,7 +61,7 @@ export default async function Switching() {
             return;
         }
 
-        const command = `find ${schemaPath} -type f | grep -E "^${schemaPath}/${apiName}\b"`;
+        const command = `find ${schemaPath} -type f | grep -E "^${schemaPath}/${apiName}\\b"`;
         await find(command)
             .then(select(prefix + '/schema'))
             .then(openFile);
