@@ -47,9 +47,30 @@ export async function exec() {
     );
     await execCommandOnShell(`scp ${fsPath} ${user}@${addr}:${remotePath}`);
 
+    const relativePathAbbr = getAbbreviationPath(relativePath);
     workspace.showMessage(
-        `Successfully copy the file to remote server with id(${id})`
+        `Successfully copy the file(${relativePathAbbr}) to remote server with id(${id})`
     );
+}
+
+function getAbbreviationPath(relativePath: string): string {
+    const current = basename(relativePath);
+    const parentDir = basename(dirname(relativePath));
+
+    const list = relativePath.split('/');
+
+    if (list.length > 2) {
+        const prefix = list
+            .slice(0, list.length - 2)
+            .map(item => item[0])
+            .join('/');
+
+        return prefix + '/' + parentDir + '/' + current;
+    } else if (list.length === 2) {
+        return parentDir + '/' + current;
+    } else {
+        return current;
+    }
 }
 
 export async function reset() {
