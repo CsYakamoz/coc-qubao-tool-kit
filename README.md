@@ -1,6 +1,6 @@
 # qubao-tool-kit
 
-A fork of [qubao-todo-kit](https://github.com/CsYakamoz/qubao-tool-kit)
+A fork of [qubao-todo-kit](https://github.com/CsYakamoz/qubao-tool-kit), but not including `Exchange`.
 
 ## License
 
