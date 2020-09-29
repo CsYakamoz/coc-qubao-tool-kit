@@ -17,7 +17,7 @@ export class PmrList extends BasicList {
             const name = item.data;
 
             const target = getTarget();
-            const restartCommand = `ssh ${target.remoteUser}@${target.remoteAddr} "pm2 restart ${name}"`;
+            const restartCommand = getRestartCommand(target, name);
             await execCommandOnShell(restartCommand);
 
             workspace.showMessage(
@@ -29,7 +29,7 @@ export class PmrList extends BasicList {
             const name = item.data;
 
             const target = getTarget();
-            const restartCommand = `ssh ${target.remoteUser}@${target.remoteAddr} "pm2 restart ${name}"`;
+            const restartCommand = getRestartCommand(target, name);
 
             workspace.showMessage(restartCommand);
         });
@@ -37,12 +37,9 @@ export class PmrList extends BasicList {
 
     public async loadItems(): Promise<ListItem[]> {
         const target = getTarget();
-        const filter = new RegExp(target.regex ? target.regex : '.*');
+        const filterReg = new RegExp(target.regex ? target.regex : '.*');
 
-        const listCommand = `ssh ${target.remoteUser}@${target.remoteAddr} "pm2 jlist | jq -c 'map(.name)'" | jq -r "join(\\"\\n\\")"`;
-        const list = await execCommandOnShell(listCommand)
-            .then(str => str.split('\n'))
-            .then(arr => arr.filter(item => filter.test(item)));
+        const list = await getList(target, filterReg);
 
         return list.map(
             (name): ListItem => ({
@@ -64,16 +61,66 @@ function getTarget() {
     }
 
     const target = config.list.find(
-        item => item.id === config.targetId
+        (item) => item.id === config.targetId
     ) as PmrBase;
 
     return target;
 }
 
+async function getList(target: PmrBase, filterReg: RegExp): Promise<string[]> {
+    const processingCmdOutput = (str: string) =>
+        str.split('\n').filter((item) => item !== '' && filterReg.test(item));
+
+    if (target.commandList === undefined) {
+        const command = `ssh ${target.remoteUser}@${target.remoteAddr} "pm2 jlist | jq -c 'map(.name)'" | jq -r "join(\\"\\n\\")"`;
+
+        return execCommandOnShell(command).then(processingCmdOutput);
+    }
+
+    const result = await Promise.all(
+        target.commandList.map((item) => {
+            const command = `ssh ${target.remoteUser}@${target.remoteAddr} ${item.list}`;
+
+            return execCommandOnShell(command)
+                .then(processingCmdOutput)
+                .then((list) =>
+                    list.map((name) => `${getPrefix(item.id)}${name}`)
+                );
+        })
+    );
+
+    return result.reduce((acc, curr) => acc.concat(curr), []);
+}
+
+function getRestartCommand(target: PmrBase, selected: string): string {
+    if (target.commandList === undefined) {
+        return `ssh ${target.remoteUser}@${target.remoteAddr} "pm2 restart ${selected}"`;
+    }
+
+    const result = target.commandList.find((item) =>
+        selected.startsWith(getPrefix(item.id))
+    );
+    if (result === undefined) {
+        throw new Error(
+            `can not find any restart command, selected: ${selected}`
+        );
+    }
+
+    const name = result.restart.replace(
+        '${selected}',
+        selected.replace(getPrefix(result.id), '')
+    );
+    return `ssh ${target.remoteUser}@${target.remoteAddr} ` + `${name}`;
+}
+
+function getPrefix(id: string) {
+    return `[${id}]`;
+}
+
 export async function reset() {
     const config = getConfigWithInit();
 
-    const itemList = config.list.map(item => item.id).concat('⊕');
+    const itemList = config.list.map((item) => item.id).concat('⊕');
     const selectedIdx = await workspace.showQuickpick(itemList);
     if (selectedIdx === -1) {
         workspace.showMessage('cancel');

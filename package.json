@@ -1,6 +1,6 @@
 {
     "name": "qubao-tool-kit",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "",
     "author": "CsYakamoz <532609418@qq.com>",
     "license": "MIT",
@@ -125,6 +125,24 @@
                                             },
                                             "regex": {
                                                 "type": "string"
+                                            },
+                                            "commandList": {
+                                                "type": "array",
+                                                "description": "custom list & restart command",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "list": {
+                                                            "type": "string"
+                                                        },
+                                                        "restart": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                }
                                             }
                                         },
                                         "required": [

@@ -18,8 +18,15 @@ interface CprSetting {
     [key: string]: CprFolderConfig;
 }
 
+interface PmrCustomCommand {
+    id: string;
+    list: string;
+    restart: string;
+}
+
 interface PmrBase extends Base {
     regex?: string;
+    commandList?: PmrCustomCommand[];
 }
 
 interface PmrSetting {
