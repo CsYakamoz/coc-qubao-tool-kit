@@ -25,6 +25,27 @@ export class PmrList extends BasicList {
             );
         });
 
+        this.addMultipleAction('exec-multi', async (itemList: ListItem[]) => {
+            const result : string[] = [];
+
+            for (const item of itemList) {
+                const name = item.data;
+                const target = getTarget();
+                const restartCommand = getRestartCommand(target, name);
+
+                try {
+                    await execCommandOnShell(restartCommand);
+                    result.push(name);
+                } catch (e) {
+                    workspace.showMessage(`failed to restart remote process - ${name}`);   
+                }
+            }
+
+            workspace.showMessage(
+                `Successfully restart remote process - ${result.join(', ')}`
+            );
+        })
+
         this.addAction('preview', (item: ListItem) => {
             const name = item.data;
 
