@@ -6,7 +6,7 @@ import { execCommandOnShell } from '../utility';
 const FileType = {
     NONE: 0,
     SCHEMA: 1,
-    HANDLER: 2
+    HANDLER: 2,
 };
 
 const fsUriPrefix = 'file://';
@@ -82,18 +82,18 @@ function getFileType(fsPath: string): number {
 
 async function find(command: string) {
     return execCommandOnShell(command)
-        .then(str => str.split('\n'))
-        .then(arr => arr.filter(_ => _ !== ''))
-        .then(arr => arr.sort((a, b) => a.length - b.length));
+        .then((str) => str.split('\n'))
+        .then((arr) => arr.filter((_) => _ !== ''))
+        .then((arr) => arr.sort((a, b) => a.length - b.length));
 }
 
 function select(prefix: string) {
-    return async function(list: string[]) {
+    return async function (list: string[]) {
         if (list.length === 1) {
             return list[0];
         }
 
-        const relPathList = list.map(fsPath => relative(prefix, fsPath));
+        const relPathList = list.map((fsPath) => relative(prefix, fsPath));
 
         const selectedIdx = await showQuickPick(relPathList);
         return list[selectedIdx];
@@ -125,7 +125,9 @@ async function openFile(fsPath: string) {
 }
 
 async function findWindow(fsPath: string) {
-    const windowList = await workspace.nvim.windows;
+    const windowList = await workspace.nvim.tabpage.then(
+        (tabpage) => tabpage.windows
+    );
 
     for (const window of windowList) {
         const buf = await window.buffer;

@@ -157,15 +157,6 @@
                                 "targetId",
                                 "list"
                             ]
-                        },
-                        "switching": {
-                            "type": "object",
-                            "properties": {
-                                "defaultPoint": {
-                                    "type": "string",
-                                    "description": "default jump to the file if exists"
-                                }
-                            }
                         }
                     }
                 }
