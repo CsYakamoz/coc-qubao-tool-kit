@@ -6,6 +6,7 @@ interface Base {
 
 interface CprBase extends Base {
     remoteDir: string;
+    remotePort?: number;
 }
 
 interface CprFolderConfig {

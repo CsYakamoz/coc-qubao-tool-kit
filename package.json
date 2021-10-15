@@ -69,6 +69,11 @@
                                                             },
                                                             "id": {
                                                                 "type": "string"
+                                                            },
+                                                            "remotePort": {
+                                                                "type": "number",
+                                                                "description": "ssh port",
+                                                                "default": 22
                                                             }
                                                         },
                                                         "required": [

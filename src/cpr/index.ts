@@ -4,7 +4,7 @@ import {
     getTargetConfig,
     getFolderConfig,
     updateFolderConfig,
-    addTargetConfig
+    addTargetConfig,
 } from './config';
 import { basename, relative, dirname } from 'path';
 import { init, changeText } from './status';
@@ -36,16 +36,19 @@ export async function exec() {
         id,
         remoteUser: user,
         remoteAddr: addr,
-        remoteDir: dir
+        remoteDir: dir,
+        remotePort: port = 22,
     } = getTargetConfig(folder);
 
     const relativePath = relative(folder, fsPath);
     const remotePath = dir + '/' + relativePath;
 
     await execCommandOnShell(
-        `ssh ${user}@${addr} "mkdir -p ${dirname(remotePath)}"`
+        `ssh ${user}@${addr} -p ${port} "mkdir -p ${dirname(remotePath)}"`
     );
-    await execCommandOnShell(`scp ${fsPath} ${user}@${addr}:${remotePath}`);
+    await execCommandOnShell(
+        `scp -P ${port} ${fsPath} ${user}@${addr}:${remotePath}`
+    );
 
     const relativePathAbbr = getAbbreviationPath(relativePath);
     workspace.showMessage(
@@ -62,7 +65,7 @@ function getAbbreviationPath(relativePath: string): string {
     if (list.length > 2) {
         const prefix = list
             .slice(0, list.length - 2)
-            .map(item => item[0])
+            .map((item) => item[0])
             .join('/');
 
         return prefix + '/' + parentDir + '/' + current;
@@ -77,7 +80,7 @@ export async function reset() {
     const folder = await getFolder();
     const folderConfig = getFolderConfigWithInit(folder);
 
-    const itemList = folderConfig.list.map(item => item.id).concat('⊕');
+    const itemList = folderConfig.list.map((item) => item.id).concat('⊕');
     const selectedIdx = await workspace.showQuickpick(itemList);
     if (selectedIdx === -1) {
         workspace.showMessage('cancel');

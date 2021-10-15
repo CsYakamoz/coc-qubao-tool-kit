@@ -11,7 +11,7 @@ export function getTargetConfig(folder: string) {
     }
 
     const target = folderConfig.list.find(
-        item => item.id === folderConfig.targetId
+        (item) => item.id === folderConfig.targetId
     ) as CprBase;
 
     return target;
@@ -39,7 +39,7 @@ export function isCorrect(folderConfig: CprFolderConfig) {
     }
 
     const target = folderConfig.list.find(
-        item => item.id === folderConfig.targetId
+        (item) => item.id === folderConfig.targetId
     );
 
     return target !== undefined;
@@ -62,13 +62,13 @@ export async function addTargetConfig(
 
     updateFolderConfig(folder, {
         targetId: base.id,
-        list: folderConfig.list.concat(base)
+        list: folderConfig.list.concat(base),
     });
 
     return base.id;
 }
 
-async function requireInput() {
+async function requireInput(): Promise<CprBase> {
     const id = await workspace.requestInput(
         'please input the id of this environment(it should be unique)'
     );
@@ -79,6 +79,12 @@ async function requireInput() {
     );
     throwErrorIfNull('remoteAddr', remoteAddr);
 
+    const remotePort = await workspace.requestInput('please input remote port');
+    throwErrorIfNull('remoteUser', remotePort);
+    if (isNaN(Number(remotePort))) {
+        throw new Error('can not convert remote-port to number');
+    }
+
     const remoteUser = await workspace.requestInput('please input remote user');
     throwErrorIfNull('remoteUser', remoteUser);
 
@@ -87,5 +93,11 @@ async function requireInput() {
     );
     throwErrorIfNull('remoteDir', remoteDir);
 
-    return { id, remoteAddr, remoteUser, remoteDir };
+    return {
+        id,
+        remoteAddr,
+        remoteUser,
+        remoteDir,
+        remotePort: parseInt(remotePort),
+    };
 }
